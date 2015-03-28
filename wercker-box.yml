@@ -39,7 +39,7 @@ script: |-
   # cache path
   PATH_CACHE=$(echo $PATH)
 
-  sudo apt-get unzip -y -qq
+  sudo apt-get install unzip -y -qq
   type unzip || { echo "Expected unzip to be present, aborting..."; exit 1; }
   # Grails 2.5.0
   sudo wget "http://dist.springframework.org.s3.amazonaws.com/release/GRAILS/grails-2.5.0.zip"
