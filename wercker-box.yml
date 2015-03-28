@@ -1,12 +1,11 @@
-name: Grails-Last-Test
-version: 0.0.8
+name: mtdevelopment-grails
+version: 0.0.1
 inherits: wercker/ubuntu12.04-webessentials@1.0.4
 type: main
 platform: ubuntu@12.04
-description: Wercker box for Grails 2.4.4 development - java 8
+description: Wercker box for Grails 2.5.0
 keywords:
-  - Grails 2.4.4
-  - Grails 3.0.0.M1
+  - Grails 2.5.0
   - Ubuntu 12.04
   - java 8
 packages:
@@ -14,7 +13,7 @@ packages:
 script: |-
   # Remove java from base box
   sudo apt-get purge openjdk-\* icedtea-\* icedtea6-\*
-  
+
   # Assert that java is not available anymore
   ! type java || { echo "I expected java to be not available. Java version is: $(java -version). Aborting."; exit 1; }
 
@@ -23,67 +22,34 @@ script: |-
   sudo apt-get update
 
   # Accept the oracle license
-  # echo debconf shared/accepted-oracle-license-v1-1 select true | sudo debconf-set-selections
-  # echo debconf shared/accepted-oracle-license-v1-1 seen true |  sudo debconf-set-selections
   echo oracle-java8-installer shared/accepted-oracle-license-v1-1 select true | sudo /usr/bin/debconf-set-selections
 
   # Install oracle-java8
   sudo apt-get install oracle-java8-installer -y -qq
-  # Version 
+  # Version
   java -version
   javac -version
 
   # Default environement variables
   sudo apt-get install oracle-java8-set-default
-  
+
   # We should have java again
   type java || { echo "I expected java to be available after oracle-java8-installer installation. Aborting."; exit 1; }
-
-  # Install ant
-  sudo apt-get install ant ant-contrib ivy ivy-doc -y -qq
-  
-  # We should have ant and ivy available
-  type ant || { echo "I expected ant to be available. Aborting."; exit 1; }
-
-  # Install maven
-  sudo apt-get install maven -y -qq
-  
-  type mvn || { echo "I expected maven to be available. Aborting."; exit 1; }
 
   # cache path
   PATH_CACHE=$(echo $PATH)
 
-  # Grails 2.4.4
-  sudo wget "http://dist.springframework.org.s3.amazonaws.com/release/GRAILS/grails-2.4.4.zip"
-  GRAILS_HOME=/lib/grails-2.4.4
-  sudo unzip -qq grails-2.4.4.zip -d $GRAILS_HOME
+  # Grails 2.5.0
+  sudo wget "http://dist.springframework.org.s3.amazonaws.com/release/GRAILS/grails-2.5.0.zip"
+  GRAILS_HOME=/lib/grails-2.5.0
+  sudo unzip -qq grails-2.5.0.zip -d $GRAILS_HOME
   echo "PWD="$(pwd)
   echo "WERCKER_ROOT="$WERCKER_ROOT
   cd $GRAILS_HOME
-  sudo mv grails-2.4.4/* .
+  sudo mv grails-2.5.0/* .
   pwd
   ls -al
   # Update path
-  export JAVA_HOME=/usr/lib/jvm/java-8-oracle
-  export PATH="$PATH:$JAVA_HOME/bin" 
-  export PATH="$PATH:$GRAILS_HOME/bin"
-  grails --version
-
-  # Grails 3.0.0 M1
-  sudo wget "https://github.com/grails/grails-core/releases/download/v3.0.0.M1/grails-3.0.0.M1.zip"
-  GRAILS_HOME=/lib/grails-3.0.0.M1
-  sudo unzip -qq grails-3.0.0.M1.zip -d $GRAILS_HOME
-  echo "PWD="$(pwd)
-  echo "WERCKER_ROOT="$WERCKER_ROOT
-  cd $GRAILS_HOME
-  sudo mv grails-3.0.0.M1/* .
-  sudo rm -r $GRAILS_HOME/grails-3.0.0.M1/
-  pwd
-  ls -al
-  # Update path
-  echo $PATH
-  export PATH="$PATH_CACHE"
-  echo $PATH
   export JAVA_HOME=/usr/lib/jvm/java-8-oracle
   export PATH="$PATH:$JAVA_HOME/bin"
   export PATH="$PATH:$GRAILS_HOME/bin"
